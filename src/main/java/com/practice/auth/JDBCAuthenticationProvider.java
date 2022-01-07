@@ -11,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import reactor.core.publisher.Mono;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Optional;
 
 @Singleton
@@ -38,7 +40,11 @@ public class JDBCAuthenticationProvider implements AuthenticationProvider {
                 if (maybeUser.get().getPassword().equals(secret)) {
                     //pass
                     LOG.info("User Logged in");
-                    emitter.success(AuthenticationResponse.success(maybeUser.get().getEmail()));
+                    final HashMap<String, Object> attributes = new HashMap<>();
+                    attributes.put("hair_color", "brown");
+                    attributes.put("language", "en");
+                    emitter.success(AuthenticationResponse
+                            .success(identity, Collections.singletonList("ROLE_USER"), attributes));
                 } else {
                 LOG.info("Wrong password for user {}", maybeUser.get().getPassword());
                 }
